@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Système de Facturation - Omar Plâtre</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="company-info">
+                <h1><i class="fas fa-building"></i> Omar Plâtre</h1>
+                <p><i class="fas fa-map-marker-alt"></i> Tamansort Zone 7, Marrakech</p>
+            </div>
+            <nav class="nav-tabs">
+                <button class="tab-btn active" data-tab="billing">
+                    <i class="fas fa-file-invoice"></i> Facturation
+                </button>
+                <button class="tab-btn" data-tab="clients">
+                    <i class="fas fa-users"></i> Clients
+                </button>
+                <button class="tab-btn" data-tab="products">
+                    <i class="fas fa-box"></i> Produits
+                </button>
+            </nav>
+        </header>
+
+        <!-- Section Facturation -->
+        <div id="billing" class="tab-content active">
+            <div class="billing-section">
+                <h2><i class="fas fa-file-invoice-dollar"></i> Nouvelle Facture</h2>
+                
+                <div class="invoice-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="clientSelect">Client:</label>
+                            <select id="clientSelect" required>
+                                <option value="">Sélectionner un client</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="invoiceDate">Date:</label>
+                            <input type="date" id="invoiceDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="invoiceNumber">N° Facture:</label>
+                            <input type="text" id="invoiceNumber" readonly>
+                        </div>
+                    </div>
+
+                    <div class="products-section">
+                        <h3>Produits</h3>
+                        <div class="product-row">
+                            <select class="product-select">
+                                <option value="">Sélectionner un produit</option>
+                            </select>
+                            <input type="number" class="quantity" placeholder="Quantité" min="1">
+                            <input type="number" class="unit-price" placeholder="Prix unitaire" step="0.01" min="0">
+                            <button type="button" class="btn-add-product">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <div id="productsList"></div>
+                    </div>
+
+                    <div class="invoice-summary">
+                        <div class="summary-row">
+                            <span>Sous-total:</span>
+                            <span id="subtotal">0.00 MAD</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>TVA (0%):</span>
+                            <span id="tax">0.00 MAD</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total:</span>
+                            <span id="total">0.00 MAD</span>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" id="generateInvoice" class="btn btn-primary">
+                            <i class="fas fa-file-pdf"></i> Générer Facture
+                        </button>
+                        <button type="button" id="clearInvoice" class="btn btn-secondary">
+                            <i class="fas fa-trash"></i> Effacer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Clients -->
+        <div id="clients" class="tab-content">
+            <div class="clients-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-users"></i> Gestion des Clients</h2>
+                    <button id="addClientBtn" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Nouveau Client
+                    </button>
+                </div>
+
+                <div id="clientForm" class="form-container hidden">
+                    <h3>Ajouter un Client</h3>
+                    <form id="clientFormElement">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="clientName">Nom:</label>
+                                <input type="text" id="clientName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="clientPhone">Téléphone:</label>
+                                <input type="tel" id="clientPhone">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="clientEmail">Email:</label>
+                                <input type="email" id="clientEmail">
+                            </div>
+                            <div class="form-group">
+                                <label for="clientAddress">Adresse:</label>
+                                <input type="text" id="clientAddress">
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Enregistrer
+                            </button>
+                            <button type="button" id="cancelClient" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Annuler
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="clients-list">
+                    <h3>Liste des Clients</h3>
+                    <div id="clientsList"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Produits -->
+        <div id="products" class="tab-content">
+            <div class="products-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-box"></i> Gestion des Produits</h2>
+                    <button id="addProductBtn" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Nouveau Produit
+                    </button>
+                </div>
+
+                <div id="productForm" class="form-container hidden">
+                    <h3>Ajouter un Produit</h3>
+                    <form id="productFormElement">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="productName">Nom du produit:</label>
+                                <input type="text" id="productName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="productPrice">Prix (MAD):</label>
+                                <input type="number" id="productPrice" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="productUnit">Unité:</label>
+                                <select id="productUnit" required>
+                                    <option value="pièce">Pièce</option>
+                                    <option value="kg">Kilogramme</option>
+                                    <option value="m">Mètre</option>
+                                    <option value="m²">Mètre carré</option>
+                                    <option value="sac">Sac</option>
+                                    <option value="litre">Litre</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="productDescription">Description:</label>
+                                <input type="text" id="productDescription">
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Enregistrer
+                            </button>
+                            <button type="button" id="cancelProduct" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Annuler
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="products-list">
+                    <h3>Liste des Produits</h3>
+                    <div id="productsList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour l'aperçu de la facture -->
+    <div id="invoiceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Aperçu de la Facture</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div id="invoicePreview" class="invoice-preview"></div>
+            <div class="modal-actions">
+                <button id="printInvoice" class="btn btn-primary">
+                    <i class="fas fa-print"></i> Imprimer
+                </button>
+                <button id="downloadInvoice" class="btn btn-secondary">
+                    <i class="fas fa-download"></i> Télécharger PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
